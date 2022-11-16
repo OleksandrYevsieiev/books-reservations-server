@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { checkUniqueTitle } from '~/middleware/checkUniqueTitle';
+import { checkUniqueTitle } from '../middleware/checkUniqueTitle';
 import controller from '../controllers/book';
 
 const router = express.Router();

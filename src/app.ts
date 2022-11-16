@@ -7,7 +7,6 @@ import bookRoutes from './routes/book';
 import reservationRoutes from './routes/reservation';
 
 const app: Express = express();
-const port = process.env.SERVER_PORT;
 
 const StartServer = () => {
   app.use((req, res, next) => {
@@ -48,7 +47,7 @@ mongoose
   .catch((error) => console.error(error));
 
 /** Healthcheck */
-app.get('/ping', (req, res, next) => res.status(200).json({ hello: 'world' }));
+app.get('/api/ping', (req, res, next) => res.status(200).json({ hello: 'world' }));
 
 app.use((req, res, next) => {
   const error = new Error('Not found');
