@@ -19,7 +19,7 @@
   "compileOnSave": true, /* Enables compile on save for this project */
   "include": [ /* Specifies the files which will be compiled */
     "src/**/*" 
-  ],
+, "src/middleware"  ],
   "exclude": [ /* Speficies the files which will be excluded from the dist */
     "node_modules"
   ]
