@@ -29,21 +29,38 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-const returnBooksByTitle = async (req: Request, res: Response, next: NextFunction) => {
-  const { book_id } = req.query;
+const getAllReservations = (req: Request, res: Response, next: NextFunction) => {
+  const { page } = req.query;
+  const { limit } = req.query;
+
+  const pageNum = parseInt(page as string, 10) || 0;
+  const limitNum = parseInt(limit as string, 10) || 0;
+
+  const skipIndex = (pageNum - 1) * limitNum;
+
+  return Reservation.find()
+    .limit(limitNum)
+    .skip(skipIndex)
+    .then((reservations) => res.status(200).json({ reservations }))
+    .catch((error) => res.status(500).json({ error }));
+};
+
+const clearReservation = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.query;
 
   try {
-    const foundBook = await Book.findById(book_id);
+    const foundReservation = await Reservation.findById(id);
 
-    const removedReservation = await Reservation.deleteMany({ book_id: foundBook?._id });
+    const removedReservation = await Reservation.deleteOne({ _id: foundReservation?._id });
 
-    const adjustedBooksNumber = await Book.updateOne({ _id: foundBook?._id }, { count: foundBook?.total_of_type });
+    const adjustedBooksNumber = await Book.findByIdAndUpdate({ _id: foundReservation?.book_id }, { $inc: { count: +1 } });
 
-    if (removedReservation.deletedCount.valueOf() && adjustedBooksNumber.modifiedCount.valueOf()) {
+    if (removedReservation.deletedCount.valueOf() && adjustedBooksNumber) {
       return res.status(202).json({ removedReservation });
     }
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
-export default { createReservation, returnBooksByTitle };
+
+export default { createReservation, getAllReservations, clearReservation };

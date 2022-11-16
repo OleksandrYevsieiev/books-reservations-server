@@ -10,8 +10,7 @@ const addBooks = (req: Request, res: Response, next: NextFunction) => {
     _id: new mongoose.Types.ObjectId(),
     title,
     description,
-    count,
-    total_of_type: count
+    count
   });
 
   return addedBooks

@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post('/', checkBookAvailability, controller.createReservation);
 
-router.delete('/', controller.returnBooksByTitle);
+router.get('/', controller.getAllReservations);
+
+router.delete('/', controller.clearReservation);
 
 export = router;
