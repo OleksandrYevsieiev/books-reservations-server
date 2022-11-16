@@ -10,7 +10,8 @@ const addBooks = (req: Request, res: Response, next: NextFunction) => {
     _id: new mongoose.Types.ObjectId(),
     title,
     description,
-    count
+    count,
+    total_of_type: count
   });
 
   return addedBooks
@@ -20,7 +21,17 @@ const addBooks = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllBooks = (req: Request, res: Response, next: NextFunction) => {
+  const { page } = req.query;
+  const { limit } = req.query;
+
+  const pageNum = parseInt(page as string, 10) || 0;
+  const limitNum = parseInt(limit as string, 10) || 0;
+
+  const skipIndex = (pageNum - 1) * limitNum;
+
   return Book.find()
+    .limit(limitNum)
+    .skip(skipIndex)
     .then((books) => res.status(200).json({ books }))
     .catch((error) => res.status(500).json({ error }));
 };

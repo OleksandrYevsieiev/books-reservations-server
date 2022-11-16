@@ -29,4 +29,21 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export default { createReservation };
+const returnBooksByTitle = async (req: Request, res: Response, next: NextFunction) => {
+  const { book_id } = req.query;
+
+  try {
+    const foundBook = await Book.findById(book_id);
+
+    const removedReservation = await Reservation.deleteMany({ book_id: foundBook?._id });
+
+    const adjustedBooksNumber = await Book.updateOne({ _id: foundBook?._id }, { count: foundBook?.total_of_type });
+
+    if (removedReservation.deletedCount.valueOf() && adjustedBooksNumber.modifiedCount.valueOf()) {
+      return res.status(202).json({ removedReservation });
+    }
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+export default { createReservation, returnBooksByTitle };
