@@ -29,8 +29,8 @@ const getAllBooks = (req: Request, res: Response, next: NextFunction) => {
   const skipIndex = (pageNum - 1) * limitNum;
 
   return Book.find()
-    .limit(limitNum)
     .skip(skipIndex)
+    .limit(limitNum)
     .then((books) => res.status(200).json({ books }))
     .catch((error) => res.status(500).json({ error }));
 };
