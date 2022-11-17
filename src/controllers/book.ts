@@ -26,11 +26,11 @@ const getAllBooks = (req: Request, res: Response, next: NextFunction) => {
   const pageNum = parseInt(page as string, 10) || 0;
   const limitNum = parseInt(limit as string, 10) || 0;
 
-  const skipIndex = (pageNum - 1) * limitNum;
+  const skipIndex = pageNum * limitNum;
 
   return Book.find()
-    .skip(skipIndex)
     .limit(limitNum)
+    .skip(skipIndex)
     .then((books) => res.status(200).json({ books }))
     .catch((error) => res.status(500).json({ error }));
 };

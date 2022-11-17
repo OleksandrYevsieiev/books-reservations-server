@@ -36,12 +36,12 @@ const getAllReservations = (req: Request, res: Response, next: NextFunction) => 
   const pageNum = parseInt(page as string, 10) || 0;
   const limitNum = parseInt(limit as string, 10) || 0;
 
-  const skipIndex = (pageNum - 1) * limitNum;
+  const skipIndex = pageNum * limitNum;
 
   return Reservation.find()
     .limit(limitNum)
     .skip(skipIndex)
-    .then((reservations) => res.status(200).json({ reservations }))
+    .then((reservations) => res.status(200).json(reservations))
     .catch((error) => res.status(500).json({ error }));
 };
 
