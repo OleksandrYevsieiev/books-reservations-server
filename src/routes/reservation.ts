@@ -9,6 +9,6 @@ router.post('/', checkBookAvailability, controller.createReservation);
 
 router.get('/', controller.getAllReservations);
 
-router.delete('/', controller.clearReservation);
+router.delete('/', controller.clearReservations);
 
 export = router;

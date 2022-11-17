@@ -45,15 +45,15 @@ const getAllReservations = (req: Request, res: Response, next: NextFunction) => 
     .catch((error) => res.status(500).json({ error }));
 };
 
-const clearReservation = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.query;
-
+const clearReservations = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const foundReservation = await Reservation.findById(id);
+    const foundReservations = await Reservation.find({ _id: { $in: req.body } });
 
-    const removedReservation = await Reservation.deleteOne({ _id: foundReservation?._id });
+    const bookIDsOfRemovedResarvations = foundReservations.map((res) => res.book_id);
 
-    const adjustedBooksNumber = await Book.findByIdAndUpdate({ _id: foundReservation?.book_id }, { $inc: { count: +1 } });
+    const removedReservation = await Reservation.deleteMany({ _id: { $in: req.body } });
+
+    const adjustedBooksNumber = await Book.updateMany({ _id: { $in: bookIDsOfRemovedResarvations } }, { $inc: { count: +req.body.length } });
 
     if (removedReservation.deletedCount.valueOf() && adjustedBooksNumber) {
       return res.status(202).json({ removedReservation });
@@ -63,4 +63,4 @@ const clearReservation = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-export default { createReservation, getAllReservations, clearReservation };
+export default { createReservation, getAllReservations, clearReservations };
