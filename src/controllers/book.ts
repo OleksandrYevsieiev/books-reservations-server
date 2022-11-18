@@ -31,7 +31,7 @@ const getAllBooks = (req: Request, res: Response, next: NextFunction) => {
   return Book.find()
     .limit(limitNum)
     .skip(skipIndex)
-    .then((books) => res.status(200).json({ books }))
+    .then((books) => res.status(200).json(books))
     .catch((error) => res.status(500).json({ error }));
 };
 
