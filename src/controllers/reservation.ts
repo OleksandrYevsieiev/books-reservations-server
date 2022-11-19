@@ -49,11 +49,11 @@ const clearReservations = async (req: Request, res: Response, next: NextFunction
   try {
     const foundReservations = await Reservation.find({ _id: { $in: req.body } });
 
-    const bookIDsOfRemovedResarvations = foundReservations.map((res) => res.book_id);
+    const bookIDsOfRemovedReservations = foundReservations.map((res) => res.book_id);
 
     const removedReservation = await Reservation.deleteMany({ _id: { $in: req.body } });
 
-    const adjustedBooksNumber = await Book.updateMany({ _id: { $in: bookIDsOfRemovedResarvations } }, { $inc: { count: +req.body.length } });
+    const adjustedBooksNumber = await Book.updateMany({ _id: { $in: bookIDsOfRemovedReservations } }, { $inc: { count: +req.body.length } });
 
     if (removedReservation.deletedCount.valueOf() && adjustedBooksNumber) {
       return res.status(202).json({ removedReservation });
